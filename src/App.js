@@ -12,7 +12,7 @@ window.Buffer = Buffer
 
 const arr = Object.values(kp._keypair.secretKey)
 const secret = new Uint8Array(arr)
-const baseAccount = web3.Keypair.fromSecretKey(secret)
+const baseAccount = Keypair.fromSecretKey(secret)
 const ProgramId = new PublicKey(idl.metadata.address)
 const network = clusterApiUrl('devnet')
 const opts = {
@@ -122,8 +122,12 @@ const App = () => {
                   {gifList.map((item, index) => (
                       <div className="gif-item" key={index}>
                          <img src={item.gifLink} alt={item.gifLink}/>
-                      </div>
-                  ))}
+                         <div className="sub-text">
+                            {item.userAddress.toString()}
+                        </div>
+                      </div>  
+                  )
+                  )}
                 </div>
             </div>
       )
