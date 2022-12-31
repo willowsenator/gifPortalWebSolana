@@ -120,12 +120,12 @@ const App = () => {
                 </form>
                 <div className="gif-grid">
                   {gifList.map((item, index) => (
-                      <div className="gif-item" key={index}>
-                         <img src={item.gifLink} alt={item.gifLink}/>
-                         <div className="sub-text">
-                            {item.userAddress.toString()}
-                        </div>
-                      </div>  
+                      <div className="gif-item sub-text" key={index}>
+                        {item.userAddress.toString()}
+                        <img src={item.gifLink} alt={item.gifLink}/>
+                        <button className="cta-button submit-gif-button" onClick={voteGif(index)}>Vote</button>
+                      </div>
+
                   )
                   )}
                 </div>
@@ -173,6 +173,15 @@ const App = () => {
       await getGifList()
     } catch(err){
       console.log('Error creating baseAccount: ', err)
+    }
+  }
+
+  const voteGif = async(index) => {
+    try{
+      console.log("Gif Index: ", index)
+    }
+    catch(err){
+      console.log("Error voting gif: ", )
     }
   }
 
