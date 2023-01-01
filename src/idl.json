@@ -116,6 +116,18 @@
       }
     }
   ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "VoteAccountNotGifOwnerAccount",
+      "msg": "You cannot vote with the same gif owner account"
+    },
+    {
+      "code": 6001,
+      "name": "AlreadyVoted",
+      "msg": "You have already voted"
+    }
+  ],
   "metadata": {
     "address": "FzwXxcH2FVRaqXtXx41N8vxpKPoQY3wRPnJJ7TMjP3da"
   }
