@@ -121,9 +121,10 @@ const App = () => {
                 <div className="gif-grid">
                   {gifList.map((item, index) => (
                       <div className="gif-item sub-text" key={index}>
-                        {item.userAddress.toString()}
+                        {item.userAddress.toString()}<br/>
+                        Votes: {item.numVotes.toString()}
                         <img src={item.gifLink} alt={item.gifLink}/>
-                        <button className="cta-button submit-gif-button" onClick={voteGif(index)}>Vote</button>
+                        <button className="cta-button submit-gif-button" onClick={(e) => voteGif(e, index)}>Vote</button>
                       </div>
 
                   )
@@ -176,12 +177,21 @@ const App = () => {
     }
   }
 
-  const voteGif = async(index) => {
+  const voteGif = async(event, index) => {
     try{
-      console.log("Gif Index: ", index)
+      const provider = getProvider()
+      const program = new Program(idl, ProgramId, provider)
+      await program.rpc.voteGif(index.toString(),{
+        accounts:{
+          baseAccount: baseAccount.publicKey,
+          voteUser: provider.wallet.publicKey,
+        }
+      })
+      console.log("Vote Gif from : ", provider.wallet.publicKey.toString())
+      await getGifList()
     }
     catch(err){
-      console.log("Error voting gif: ", )
+      console.log("Error voting gif: ", err)
     }
   }
 
