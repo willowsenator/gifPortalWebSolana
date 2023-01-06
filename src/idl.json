@@ -64,6 +64,36 @@
           "type": "string"
         }
       ]
+    },
+    {
+      "name": "donateToGifOwner",
+      "accounts": [
+        {
+          "name": "from",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "to",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "baseAccount",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "gifIndex",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -111,6 +141,10 @@
             "type": {
               "vec": "publicKey"
             }
+          },
+          {
+            "name": "donateAmount",
+            "type": "u64"
           }
         ]
       }
@@ -126,6 +160,11 @@
       "code": 6001,
       "name": "AlreadyVoted",
       "msg": "You have already voted"
+    },
+    {
+      "code": 6002,
+      "name": "DonateToSameAddress",
+      "msg": "You cannot donate to yourself"
     }
   ],
   "metadata": {

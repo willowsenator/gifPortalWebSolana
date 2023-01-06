@@ -1,5 +1,5 @@
 import {clusterApiUrl, Connection, PublicKey} from '@solana/web3.js';
-import {Program, Provider, web3} from '@project-serum/anchor'
+import {BN, Program, Provider, web3} from '@project-serum/anchor'
 import twitterLogo from './assets/twitter-logo.svg';
 import './App.css';
 import {useEffect, useState} from 'react';
@@ -28,6 +28,7 @@ const App = () => {
   const [walletAddress, setWalletAddress] = useState(null)
   const [inputValue, setInputValue] = useState('')
   const [gifList, setGifList] = useState([])
+  const [donateAmountValue, setDonateAmountValue] = useState('')
   const checkIfWalletIsConnected = async() =>{
     try{
       const {solana} = window;
@@ -94,6 +95,11 @@ const App = () => {
     setInputValue(value)
   }
 
+  const onDonateAmountChange = event => {
+    const {value} = event.target
+    setDonateAmountValue(value)
+  }
+
   const getProvider = () => {
     const connection = new Connection(network, opts.preflightCommitment)
     return new Provider(connection, window.solana, opts.preflightCommitment)
@@ -119,12 +125,17 @@ const App = () => {
                   <button type="submit" className="cta-button submit-gif-button">Submit</button>
                 </form>
                 <div className="gif-grid">
+                  <input type="text" placeholder="Enter amount to donate!!" value={donateAmountValue} onChange={onDonateAmountChange}/>
                   {gifList.map((item, index) => (
                       <div className="gif-item sub-text" key={index}>
                         {item.userAddress.toString()}<br/>
                         Votes: {item.numVotes.toString()}
+                        <br/>
+                        Total donation: {item.donateAmount.toString()} SOL
                         <img src={item.gifLink} alt={item.gifLink}/>
                         <button className="cta-button submit-gif-button" onClick={(e) => voteGif(e, index)}>Vote</button>
+                        <br/>
+                        <button className="cta-button submit-gif-button" onClick={(e)=>donateToGifOwner(e,index, item.userAddress)}>Donate</button>
                       </div>
 
                   )
@@ -192,6 +203,34 @@ const App = () => {
     }
     catch(err){
       console.log("Error voting gif: ", err)
+    }
+  }
+
+  const donateToGifOwner = async(event, index, gifOwner) => {
+    if(donateAmountValue.length > 0){
+      try{
+        const provider = getProvider()
+        const program = new Program(idl, ProgramId, provider)
+
+        /*await program.rpc.donateToGifOwner(index.toString(), new BN(donateAmountValue.toString()),
+            {
+          accounts:{
+            from: provider.wallet.publicKey,
+            to: gifOwner,
+            baseAccount: baseAccount.publicKey,
+          }
+        })*/
+
+        setDonateAmountValue('')
+        console.log("Donate: ", donateAmountValue.toString()," SOL ", " from ", provider.wallet.publicKey.toString(), " to ", gifOwner.toString())
+        await getGifList()
+      }
+      catch(err){
+        console.log("Error donating to Gif Owner", err)
+      }
+    }
+    else{
+      console.log("Amount to donate empty. Try again!!")
     }
   }
 
