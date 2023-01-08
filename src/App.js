@@ -1,4 +1,4 @@
-import {clusterApiUrl, Connection, PublicKey} from '@solana/web3.js';
+import {clusterApiUrl, Connection, PublicKey,  LAMPORTS_PER_SOL} from '@solana/web3.js';
 import {BN, Program, Provider, web3} from '@project-serum/anchor'
 import twitterLogo from './assets/twitter-logo.svg';
 import './App.css';
@@ -18,11 +18,6 @@ const network = clusterApiUrl('devnet')
 const opts = {
   preflightCommitment: "processed"
 }
-
-
-// Constants
-const TWITTER_HANDLE = '_buildspace';
-const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 const App = () => {
   const [walletAddress, setWalletAddress] = useState(null)
@@ -123,15 +118,15 @@ const App = () => {
                 }}>
                   <input type="text" placeholder="Enter gif link!! " value={inputValue} onChange={onInputChange}/>
                   <button type="submit" className="cta-button submit-gif-button">Submit</button>
+                  <input type="text" placeholder="Enter amount to donate!!" value={donateAmountValue} onChange={onDonateAmountChange}/>
                 </form>
                 <div className="gif-grid">
-                  <input type="text" placeholder="Enter amount to donate!!" value={donateAmountValue} onChange={onDonateAmountChange}/>
                   {gifList.map((item, index) => (
                       <div className="gif-item sub-text" key={index}>
                         {item.userAddress.toString()}<br/>
                         Votes: {item.numVotes.toString()}
                         <br/>
-                        Total donation: {item.donateAmount.toString()} SOL
+                        Total donation: {(item.donateAmount / LAMPORTS_PER_SOL).toString()} SOL
                         <img src={item.gifLink} alt={item.gifLink}/>
                         <button className="cta-button submit-gif-button" onClick={(e) => voteGif(e, index)}>Vote</button>
                         <br/>
@@ -212,14 +207,15 @@ const App = () => {
         const provider = getProvider()
         const program = new Program(idl, ProgramId, provider)
 
-        /*await program.rpc.donateToGifOwner(index.toString(), new BN(donateAmountValue.toString()),
+        await program.rpc.donateToGifOwner(index.toString(), new BN((donateAmountValue * LAMPORTS_PER_SOL).toString()),
             {
           accounts:{
             from: provider.wallet.publicKey,
             to: gifOwner,
             baseAccount: baseAccount.publicKey,
+            systemProgram: SystemProgram.programId,
           }
-        })*/
+        })
 
         setDonateAmountValue('')
         console.log("Donate: ", donateAmountValue.toString()," SOL ", " from ", provider.wallet.publicKey.toString(), " to ", gifOwner.toString())
@@ -249,15 +245,6 @@ const App = () => {
           </p>
           {!walletAddress && renderNotConnectedContainer()}
           {walletAddress && renderConnectedContainer()}
-        </div>
-        <div className="footer-container">
-          <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
-          <a
-            className="footer-text"
-            href={TWITTER_LINK}
-            target="_blank"
-            rel="noreferrer"
-          >{`built on @${TWITTER_HANDLE}`}</a>
         </div>
       </div>
     </div>

@@ -76,11 +76,16 @@
         {
           "name": "to",
           "isMut": true,
-          "isSigner": true
+          "isSigner": false
         },
         {
           "name": "baseAccount",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
           "isSigner": false
         }
       ],
